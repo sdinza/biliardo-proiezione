@@ -1,5 +1,5 @@
 'use strict';
-const CACHE = 'billard-club-v3';
+const CACHE = 'billard-club-v4';
 const ASSETS = ['./', './index.html', './core.js', './viewer.js', './storage.js', './app.js', './manifest.webmanifest', './icon-192.png', './icon-512.png'];
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(ASSETS)).then(() => self.skipWaiting()));
