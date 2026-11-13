@@ -50,7 +50,7 @@
     const hit=result?.events?.find(e=>e.type==='ball'&&(e.a===0||e.b===0)),target=hit?((hit.a===0?hit.b:hit.a)+1):(d.table==='pins'?(d.target||2):2),fraction=typeof result?.overlap==='number'?result.overlap:null;
     const panelAngle=infoAngle(d),vertical=Math.abs(Math.sin(panelAngle))>.5,scale=Math.min(r.w/(vertical?185:260),r.h/(vertical?260:185));
     const cueX=100-(fraction===null?0:(1-fraction)*74)*(result?.cutSign||1),left=Math.min(100,cueX)-45,width=Math.abs(cueX-100)+90;
-    c.save();c.translate(r.x+r.w/2,r.y+r.h/2);c.rotate(panelAngle);c.scale(scale,scale);c.translate(-(left+width/2),-79.5);c.fillStyle=theme==='black'?'#111e':'#ffffffdf';c.fillRect(left,4,width,151);c.strokeStyle=theme==='black'?'#bbb':'#444';c.strokeRect(left,4,width,151);
+    c.save();c.translate(r.x+r.w/2,r.y+r.h/2);c.rotate(panelAngle);c.scale(scale,scale);c.translate(-(left+width/2),-79.5);c.strokeStyle=theme==='black'?'#bbb':'#444';
     const x=100-(fraction===null?0:(1-fraction)*74)*(result?.cutSign||1);
     c.fillStyle=palette[target];c.beginPath();c.arc(100,76,37,0,Math.PI*2);c.fill();
     c.fillStyle='#ffffff77';c.strokeStyle=theme==='black'?'#fff':'#333';c.beginPath();c.arc(x,76,37,0,Math.PI*2);c.fill();c.stroke();
