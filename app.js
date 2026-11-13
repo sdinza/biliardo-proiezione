@@ -13,7 +13,7 @@
   $('installApp').hidden = !!standalone();
   if ('serviceWorker' in navigator && location.protocol === 'https:') {
     navigator.serviceWorker.register('./sw.js').then(() => navigator.serviceWorker.ready).then(async () => {
-      const cache = await caches.open('billard-club-v3');
+      const cache = await caches.open('billard-club-v4');
       if (await cache.match(new URL('./index.html', location.href).href)) {
         $('offlineStatus').textContent = 'Prêt hors connexion sur cet appareil.';
       }
