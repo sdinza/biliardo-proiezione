@@ -35,12 +35,22 @@
   function ball(c,b){const n=number(b);c.fillStyle=palette[n];c.strokeStyle='#333';c.lineWidth=1.5;c.beginPath();c.arc(b.x,b.y,12,0,Math.PI*2);c.fill();c.stroke();c.fillStyle='#111';c.font='bold 11px Segoe UI';c.textAlign='center';c.fillText(String(n),b.x,b.y+4);}
   function effectDegrees(shot){return Math.abs(shot?.side||0)+Math.abs(shot?.top||0)<.001?0:Math.round(Math.atan2(shot.side||0,shot.top||0)*180/Math.PI);}
   function quantity(f){if(f===null||!Number.isFinite(f))return '—';for(const [v,label]of [[1,"Pleine"],[.75,'3/4'],[.5,'1/2'],[.25,'1/4']])if(Math.abs(f-v)<.025)return label;return Math.round(f*100)+'%';}
+  function infoAngle(d){
+    const b=d.balls?.find(b=>number(b)===1),a=d.aim;if(!b||!a||!Math.hypot(a.dx,a.dy))return 0;
+    const vx=-a.dx,vy=-a.dy,hits=[];
+    if(vx<0)hits.push({t:(80-b.x)/vx,angle:Math.PI/2});
+    if(vx>0)hits.push({t:(1120-b.x)/vx,angle:-Math.PI/2});
+    if(vy<0)hits.push({t:(75-b.y)/vy,angle:Math.PI});
+    if(vy>0)hits.push({t:(595-b.y)/vy,angle:0});
+    return hits.filter(h=>h.t>=0).sort((a,b)=>a.t-b.t)[0]?.angle||0;
+  }
   function info(c,d,result,theme){
     const r=presentation(d.presentation).info;
     // Quantità effettiva al primo contatto della bianca; per tiri indiretti non si usa la mira iniziale verso la sponda.
     const hit=result?.events?.find(e=>e.type==='ball'&&(e.a===0||e.b===0)),target=hit?((hit.a===0?hit.b:hit.a)+1):(d.table==='pins'?(d.target||2):2),fraction=typeof result?.overlap==='number'?result.overlap:null;
-    c.save();c.translate(r.x,r.y);c.scale(r.w/260,r.h/185);c.fillStyle=theme==='black'?'#111e':'#ffffffdf';c.fillRect(0,0,260,185);c.strokeStyle=theme==='black'?'#bbb':'#444';c.strokeRect(0,0,260,185);
-    const x=100+(fraction===null?0:(1-fraction)*74)*(result?.cutSign||1);
+    const panelAngle=infoAngle(d),vertical=Math.abs(Math.sin(panelAngle))>.5,scale=Math.min(r.w/(vertical?185:260),r.h/(vertical?260:185));
+    c.save();c.translate(r.x+r.w/2,r.y+r.h/2);c.rotate(panelAngle);c.scale(scale,scale);c.translate(-130,-92.5);c.fillStyle=theme==='black'?'#111e':'#ffffffdf';c.fillRect(0,0,260,185);c.strokeStyle=theme==='black'?'#bbb':'#444';c.strokeRect(0,0,260,185);
+    const x=100-(fraction===null?0:(1-fraction)*74)*(result?.cutSign||1);
     c.fillStyle=palette[target];c.beginPath();c.arc(100,76,37,0,Math.PI*2);c.fill();
     c.fillStyle='#ffffff77';c.strokeStyle=theme==='black'?'#fff':'#333';c.beginPath();c.arc(x,76,37,0,Math.PI*2);c.fill();c.stroke();
     c.beginPath();c.moveTo(x-37,76);c.lineTo(x+37,76);c.moveTo(x,39);c.lineTo(x,113);c.stroke();
@@ -83,5 +93,5 @@
     return rows.map(r=>r[8]);
   }
   function matrix(q,w,h){const a=homography(q);return [a[0],a[3]*h/w,0,a[6]/w,a[1]*w/h,a[4],0,a[7]/h,0,0,1,0,a[2]*w,a[5]*h,0,1];}
-  const api={drawCue,effectDegrees,quantity,box,number,presentation,proposals,targets,render,next,quadValid,homography,matrix};if(typeof module!=='undefined'&&module.exports)module.exports=api;else root.Diapositive=api;
+  const api={infoAngle,drawCue,effectDegrees,quantity,box,number,presentation,proposals,targets,render,next,quadValid,homography,matrix};if(typeof module!=='undefined'&&module.exports)module.exports=api;else root.Diapositive=api;
 })(globalThis);
