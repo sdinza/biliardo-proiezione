@@ -12,8 +12,8 @@
   window.addEventListener('appinstalled', () => { prompt = null; $('installApp').hidden = true; });
   $('installApp').hidden = !!standalone();
   if ('serviceWorker' in navigator && location.protocol === 'https:') {
-    navigator.serviceWorker.register('./sw.js').then(() => navigator.serviceWorker.ready).then(async () => {
-      const cache = await caches.open('billard-club-v7');
+    navigator.serviceWorker.register('./sw.js', {updateViaCache: 'none'}).then(() => navigator.serviceWorker.ready).then(async () => {
+      const cache = await caches.open('billard-club-v8');
       if (await cache.match(new URL('./index.html', location.href).href)) {
         $('offlineStatus').textContent = 'Prêt hors connexion sur cet appareil.';
       }
