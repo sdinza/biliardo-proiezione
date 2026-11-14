@@ -1,8 +1,8 @@
 'use strict';
-const CACHE = 'billard-club-v7';
+const CACHE = 'billard-club-v8';
 const ASSETS = ['./', './index.html', './core.js', './viewer.js', './storage.js', './app.js', './manifest.webmanifest', './icon-192.png', './icon-512.png'];
 self.addEventListener('install', event => {
-  event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(ASSETS)).then(() => self.skipWaiting()));
+  event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(ASSETS.map(asset => new Request(new URL(asset, self.location.href), {cache: 'reload'})))).then(() => self.skipWaiting()));
 });
 self.addEventListener('activate', event => {
   event.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(key => key.startsWith('billard-club-') && key !== CACHE).map(key => caches.delete(key)))).then(() => self.clients.claim()));
